@@ -1,0 +1,9 @@
+{
+    "name": "ChoccyMewks-Unrandomizer",
+    "version_number": "1.0.0",
+    "website_url": "",
+    "description": "Choccy Mewks Unrandomizer gives you the ability to select which weapons you want the randomize weapons gamemode to spawn. It also includes the ability to give each gun additional ammo when picking it up (0-1000) and an unlimited ammo option (Host only)",
+    "dependencies": [
+        
+    ]
+}
