@@ -1,32 +1,43 @@
 ﻿using BepInEx.Configuration;
 using HarmonyLib;
 
-namespace HelloWorldPlugin.Patches
+namespace Unrandomizer.Patches
 {
 	[HarmonyPatch(typeof(Weapon))]
 	internal static class WeaponPatch
 	{
 		private static ConfigFile Config;
-		public static ConfigEntry<int> bulletCount;
-		public static ConfigEntry<bool> unlimitedAmmoToggle;
-		public static ConfigEntry<int> additionalAmmo;
+		private static ConfigEntry<bool> unlimitedAmmoToggle;
+		private static ConfigEntry<int> additionalAmmo;
 
 		public static void Setup(ConfigFile config)
 		{
 			Config = config;
-			unlimitedAmmoToggle = Config.Bind("Ammo", "Unlimited ammo", false, new ConfigDescription("Toggles if guns should have unlimited ammo"));
-			additionalAmmo = Config.Bind("Ammo", "Additional ammo", 0, new ConfigDescription("Amount of additional ammo each gun should have"));
-			bulletCount = Config.Bind("Ammo", "Number of bullets", 50, new ConfigDescription("Controls the number of bullets weapons will maintain"));
+			unlimitedAmmoToggle = Config.Bind("Ammo", "Unlimited ammo (Host only)", false, new ConfigDescription("Toggles if guns should have unlimited ammo"));
+			additionalAmmo = Config.Bind("Ammo", "Additional ammo", 0, new ConfigDescription("Amount of additional ammo each gun spawns with.", new AcceptableValueRange<int>(0, 1000)));
 		}
+
+		/// <summary>
+		/// Adds the ability to set weapons to unlimited ammo. (Host only)
+		/// </summary>
+		/// <param name="___needsAmmo"></param>
 		[HarmonyPostfix]
 		[HarmonyPatch(nameof(Weapon.WeaponUpdate))]
-		static void InfiniteAmmoPatch(ref bool ___needsAmmo, ref int ___currentAmmo)
+		private static void InfiniteAmmoPatch(ref bool ___needsAmmo)
 		{
-			if (!unlimitedAmmoToggle.Value)
-			{
-				___currentAmmo += additionalAmmo.Value;
-			}
 			___needsAmmo = !unlimitedAmmoToggle.Value;
+		}
+
+		/// <summary>
+		/// Sets the amount of additional ammo that should spawn with each weapon.<br />
+		/// This takes place each time the weapon spawns so if the value is changed it wont take effect until the weapon spawns on the pedestal again.
+		/// </summary>
+		/// <param name="___currentAmmo"></param>
+		[HarmonyPostfix]
+		[HarmonyPatch(nameof(Weapon.Awake))]
+		private static void AdditionalAmmoPatch(ref int ___currentAmmo)
+		{
+			___currentAmmo += additionalAmmo.Value;
 		}
 	}
 }
