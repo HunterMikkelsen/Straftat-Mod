@@ -17,3 +17,7 @@ This option applies to the host only and gives every weapon unlimited ammo. (May
 
 ##  Dependencies
 There aren't any hard dependencies but it is strongly recommended to also have [BepInEx Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager).
+
+## How to make changes without the Configuration Manager
+Locate the CFG at STRAFTAT\BepInEx\config\ChoccyMewks-Unrandomizer.cfg
+Find the weapon you want to change and set the value to **true** for weapons to spawn and **false** to disable the weapon spawning.
