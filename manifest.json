@@ -1,7 +1,7 @@
 {
     "name": "Unrandomizer",
     "version_number": "1.1.0",
-    "website_url": "https://github.com/HunterMikkelsen/Straftat-Mod",
+    "website_url": "https://github.com/HunterMikkelsen/Unradomizer",
     "description": "Unrandomizer gives you the ability to select which weapons you want the randomize weapons gamemode to spawn.",
     "dependencies": [ ]
 }
