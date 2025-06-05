@@ -20,12 +20,9 @@ public class Plugin : BaseUnityPlugin
 
 	private void Awake()
 	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
+		Instance ??= this;
+
 		Logger = base.Logger;
-		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
 		ConfigFileRef = Config;
 
@@ -35,5 +32,6 @@ public class Plugin : BaseUnityPlugin
 
 		ItemSpawnerPatch.Setup(ConfigFileRef);
 		//WeaponPatch.Setup(ConfigFileRef);
+		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 	}
 }
