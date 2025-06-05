@@ -1,3 +1,12 @@
+
+## v1.1.0
+
+    
+    - Removed unlimited ammo option
+    - Removed additional ammo slider
+    
+    These where removed because Straftat doesn't currently have a method to filter mod using players from the vanilla users in public lobbies. They might see a return in the future once better modding support is added.
+
 ## v1.0.0
 
     Initial Release
