@@ -1,8 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ComputerysModdingUtilities;
 using HarmonyLib;
 using Unrandomizer.Patches;
+
+[assembly: StraftatMod(isVanillaCompatible: false)]
 
 namespace Unrandomizer;
 
@@ -10,10 +13,10 @@ namespace Unrandomizer;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
+	public static ConfigFile ConfigFileRef;
 	internal new static ManualLogSource Logger;
 	private static Plugin Instance;
 	private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
-	public static ConfigFile ConfigFileRef;
 
 	private void Awake()
 	{
@@ -27,10 +30,10 @@ public class Plugin : BaseUnityPlugin
 		ConfigFileRef = Config;
 
 		harmony.PatchAll(typeof(Plugin));
-		harmony.PatchAll(typeof(WeaponPatch));
+		//harmony.PatchAll(typeof(WeaponPatch));
 		harmony.PatchAll(typeof(ItemSpawnerPatch));
 
 		ItemSpawnerPatch.Setup(ConfigFileRef);
-		WeaponPatch.Setup(ConfigFileRef);
+		//WeaponPatch.Setup(ConfigFileRef);
 	}
 }

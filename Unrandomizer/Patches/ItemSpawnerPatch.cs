@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using FishNet;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,35 +10,32 @@ namespace Unrandomizer.Patches
 	[HarmonyPatch(typeof(ItemSpawner))]
 	internal static class ItemSpawnerPatch
 	{
-		private const string weaponPath = "RandomWeapons";
-
 		private static Dictionary<string, ConfigEntry<bool>> WeaponToggles = new();
 		private static ConfigEntry<bool> EnableAllWeaponsToggle;
 		private static ConfigEntry<bool> DisableAllWeaponsToggle;
 		private static ConfigFile Config;
 		private static List<GameObject> _completeWeaponList;
-		private static List<string> randomWeaponList;
+		private static string weaponsPath = "RandomWeapons";
+
+		private static List<string> randomWeaponList
+		{
+			get
+			{
+				return WeaponToggles.Where(kv => kv.Value.Value)
+											.Select(kv => kv.Key)
+											.ToList();
+			}
+		}
 
 		/// <summary>
-		/// Gets the default list of weapons the game chooses to spawn and trims it down based on the toggles in the configuration menu.
+		/// Updates the list of random weapons to spawn before the first weapon spawn.
 		/// </summary>
 		/// <param name="___randomWeapons"></param>
 		[HarmonyPostfix]
 		[HarmonyPatch(nameof(ItemSpawner.LoadAllWeapons))]
-		private static void GetRandomWeapons(ref GameObject[] ___randomWeapons)
+		private static void GetRandomWeapons(ref GameObject[] ___randomWeapons, ref string ___weaponsPath)
 		{
-			UpdateRandomWeaponList();
-			// Verify that _completeWeaponList isn't null
-			_completeWeaponList ??= Resources.LoadAll<GameObject>(weaponPath).ToList();
-
-			// Populate the list of weapons that should spawn based on all the enabled toggles in the ConfigurationManager menu
-			randomWeaponList = WeaponToggles.Where(kv => kv.Value.Value)
-											.Select(kv => kv.Key)
-											.ToList();
-			// Pass the list back to the game
-			___randomWeapons = _completeWeaponList
-				.Where(weapon => randomWeaponList.Contains(weapon.name))
-				.ToArray();
+			SetWeaponList(ref ___randomWeapons, ref ___weaponsPath);
 		}
 
 		/// <summary>
@@ -46,21 +44,24 @@ namespace Unrandomizer.Patches
 		/// <param name="___randomWeapons"></param>
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(ItemSpawner.PickRandomWeapon))]
-		private static void GetRandomWeapon(ref GameObject[] ___randomWeapons)
+		private static void GetRandomWeapon(ref GameObject[] ___randomWeapons, ref string ___weaponsPath)
 		{
-			UpdateRandomWeaponList();
+			SetWeaponList(ref ___randomWeapons, ref ___weaponsPath);
+		}
 
-			var rand = new System.Random();
+		private static void SetWeaponList(ref GameObject[] ___randomWeapons, ref string ___weaponsPath)
+		{
+			// If the player is not host then don't let them change the weapons.
+			if (!InstanceFinder.NetworkManager.IsServer)
+			{
+				return;
+			}
+			weaponsPath = ___weaponsPath;
+			// Verify that _completeWeaponList isn't null
+			_completeWeaponList ??= Resources.LoadAll<GameObject>(weaponsPath).ToList();
 			___randomWeapons = _completeWeaponList
 				.Where(weapon => randomWeaponList.Contains(weapon.name))
 				.ToArray();
-		}
-
-		private static void UpdateRandomWeaponList()
-		{
-			randomWeaponList = WeaponToggles.Where(kv => kv.Value.Value)
-											.Select(kv => kv.Key)
-											.ToList();
 		}
 
 		#region Setup methods
@@ -72,7 +73,7 @@ namespace Unrandomizer.Patches
 		public static void Setup(ConfigFile config)
 		{
 			Config = config;
-			_completeWeaponList = Resources.LoadAll<GameObject>(weaponPath).ToList();
+
 			SetupWeaponList();
 			SetupWeaponResetButton();
 			SetupDisableAllWeaponsToggleButton();
@@ -82,6 +83,8 @@ namespace Unrandomizer.Patches
 		{
 			EnableAllWeaponsToggle = Config.Bind("General", "Enable all weapons", false, new ConfigDescription("Enables all weapons to become spawnable", null, new ConfigurationManagerAttributes { Category = "General", Order = 0, HideDefaultButton = true }));
 			DisableAllWeaponsToggle = Config.Bind("General", "Disable weapons", false, new ConfigDescription("Disables all weapons from being spawnable", null, new ConfigurationManagerAttributes { Category = "General", Order = 1, HideDefaultButton = true }));
+
+			_completeWeaponList ??= Resources.LoadAll<GameObject>(weaponsPath).ToList();
 
 			foreach (GameObject weapon in _completeWeaponList)
 			{

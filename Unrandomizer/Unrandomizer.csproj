@@ -37,6 +37,9 @@
     <Reference Include="BepInEx">
       <HintPath>R:\SteamLibrary\steamapps\common\STRAFTAT\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="ComputerysModdingUtilities">
+      <HintPath>R:\SteamLibrary\steamapps\common\STRAFTAT\STRAFTAT_Data\Managed\ComputerysModdingUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="FishNet.Runtime">
       <HintPath>R:\SteamLibrary\steamapps\common\STRAFTAT\STRAFTAT_Data\Managed\FishNet.Runtime.dll</HintPath>
     </Reference>

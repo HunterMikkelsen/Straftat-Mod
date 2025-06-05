@@ -1,7 +1,6 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
-/HelloWorldPlugin/obj
 /.vs/Straftat Mod
-/HelloWorldPlugin/bin
+/Unrandomizer/obj
+/Unrandomizer/bin
