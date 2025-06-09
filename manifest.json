@@ -1,7 +1,7 @@
 {
     "name": "Unrandomizer",
-    "version_number": "1.0.1",
+    "version_number": "1.1.1",
     "website_url": "https://github.com/HunterMikkelsen/Unradomizer",
-    "description": "Unrandomizer gives you the ability to select which weapons you want the randomize weapons gamemode to spawn.",
+    "description": "Control what weapons can spawn and the amount of time each weapon takes to spawn.",
     "dependencies": [ ]
 }

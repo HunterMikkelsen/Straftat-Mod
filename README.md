@@ -7,6 +7,17 @@ A [STRAFTAT](https://store.steampowered.com/app/2386720/STRAFTAT/) mod that exte
 ### Weapon selection
 
 - The host is able to select which weapons will spawn. This can be changed in-game using the [BepInEx Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager).
+- There are two buttons that allow you to quickly enable or disable the entire weapon list
+
+### Control of weapon respawn time
+
+#### Universal weapon respawn time
+- The host can control the specific amount of time each pedestal will take to spawn a new weapon.
+
+#### Random respawn time
+- If the checkbox for "Toggle random respawn time" is set to true it will choose a random amount of time for each pedestal to respawn a weapon.
+- The Minimum and Maximum time sliders dictate the range of time. If the min slider is set to 0 seconds and the max is set to 60 seconds a random number between 0 and 60 is selected.
+
 
 ##  Dependencies
 There are not any hard dependencies but it is strongly recommended to also have [BepInEx Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager).
@@ -26,3 +37,6 @@ This will prevent all weapons except the Bayshore from spawning.
 2. Select which weapons you want to enable /disable by clicking the checkbox next to their name.
 
 **Note:** There are convenient toggles that act like buttons at the top of the list to disable / enable all the weapons at once.
+
+## Got an idea or a bug?
+Message [ChoccyMewk](https://discord.gg/dNnYrC6PfB) on discord.
